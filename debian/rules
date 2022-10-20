@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=xlwt
+
+%:
+	dh $@ --buildsystem=pybuild --with python3,sphinxdoc
+
+override_dh_sphinxdoc:
+ifeq (,$(findstring nodoc, $(DEB_BUILD_OPTIONS)))
+	PYTHONPATH=. python3 -m sphinx -b html docs $(CURDIR)/debian/python-xlwt-doc/usr/share/doc/python-xlwt-doc/html
+	dh_sphinxdoc
+endif
+
+override_dh_compress:
+	dh_compress -i -X.py
